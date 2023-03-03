@@ -1,0 +1,115 @@
+package main //Josseph Valverde Robles
+
+import "fmt"
+
+func main() {
+
+	formar(7) // Se hace el llamado a la funcion que inicia el proceso y se le envia como
+	//parámetro el tamaño máximo de la figura que se desea
+
+}
+
+//Ejercicio #2:
+
+//Funcion para eliminar un elemento en específico de una lista
+func eliminarElemnto(lista []string, pos int) []string {
+
+	var listaN []string
+
+	var i int
+
+	for i = 0; i < len(lista); i++ {
+
+		if i != pos {
+
+			listaN = append(listaN, lista[i])
+		}
+	}
+
+	return listaN
+
+}
+
+//Función que crea una línea de figuras de una tamaño en específico
+func figuras(tamaño int) string {
+
+	a := ""
+
+	for tamaño > 0 {
+
+		a = a + " " + "*"
+
+		tamaño--
+	}
+
+	return a
+}
+
+//Función que imprime la lista final en el orden correcto para formar la figura
+func imprimir(lista []string) {
+
+	var listaF []string
+
+	var i int
+
+	for i = 0; i < len(lista); i++ {
+
+		listaF = append(listaF, lista[i])
+
+	}
+
+	for len(listaF) > 0 {
+
+		fmt.Println(listaF[len(listaF)-1])
+
+		echo := len(listaF) - 1
+
+		listaF = eliminarElemnto(listaF, echo)
+	}
+
+	var j int
+
+	for j = 1; j < len(lista); j++ {
+
+		fmt.Println(lista[j])
+
+	}
+
+}
+
+//funcion crea las líneas de las figuera llamando a la primera funcion, tomando el tamaño máximo
+//y reduciondolo hasta tener todas la líneas necesarias.
+//luego guarda todas las líneas en una lista y llama a la funcion de imprimir
+func formar(tamaño int) {
+
+	var partes []string
+
+	unidades := 0
+
+	for tamaño > 0 {
+
+		var a string
+
+		a = figuras(tamaño)
+
+		u2 := unidades
+
+		for u2 > 0 {
+
+			a = "  " + a
+
+			u2--
+
+		}
+
+		partes = append(partes, a)
+
+		unidades++
+
+		tamaño = tamaño - 2
+
+	}
+
+	imprimir(partes)
+
+}
