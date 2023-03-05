@@ -1,0 +1,53 @@
+package main
+
+import "fmt"
+
+func main() {
+
+	contarPalabras("hola mundo") //Se llama a la función, enviádole de parámetro el texto a analizar
+}
+
+func contarPalabras(palabra string) { //función que descompone el texto letra por letra para contar la cantidad
+	//de palabras y caracteres que hay en él.
+
+	var cont int
+
+	letters := 0
+
+	i := 0
+
+	if palabra[0:1] == " " {
+
+		cont = 0
+
+	} else {
+
+		cont = 1
+	}
+
+	for i < len(palabra) {
+
+		letra := palabra[i : i+1]
+
+		if letra != " " {
+
+			letters++
+
+		}
+
+		if i > 0 {
+
+			if palabra[i-1:i] == " " && letra != " " {
+
+				cont++
+
+			}
+
+		}
+
+		i++
+	}
+
+	fmt.Println("el texto contiene ", cont, " palabras, y ", letters, " caracteres")
+
+}
