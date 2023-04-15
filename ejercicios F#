@@ -1,0 +1,22 @@
+ejercicio 1:
+
+let sub_cadenas (palabra: string) (frases: string list) =
+    frases
+    |> List.filter (fun frase -> frase.Contains($" {palabra} ") || frase.StartsWith($"{palabra} ") || frase.EndsWith($" {palabra}"))
+
+let palabraBuscada = "la"
+let frases = ["la casa"; "el perro"; "pintando la cerca"]
+
+let resultado = sub_cadenas palabraBuscada frases
+
+printfn "%A" resultado
+
+
+ejercicio 2:
+
+let rec generar_sec a b =
+    if a > b then []
+    else a :: generar_sec (a+1) b
+
+let secuencia = generar_sec 0 5
+printfn "%A" secuencia
