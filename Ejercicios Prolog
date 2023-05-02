@@ -1,0 +1,25 @@
+#Ejercicio 1:
+subCadena(Sub, Lista, Filtradas) :-
+    include(subCadena2(Sub), Lista, Filtradas).
+subCadena2(Sub, Cadena) :-
+    sub_atom(Cadena, _, _, _, Sub).
+
+
+
+#Ejercicio 2:
+sub_conjunto([], _).
+sub_conjunto([X|Xs], Ys) :-
+    member(X, Ys),
+    sub_conjunto(Xs, Ys).
+
+
+#Ejercicio 3:
+aplanar([], []).
+aplanar([X|Xs], L) :- 
+    is_list(X),
+    aplanar(X, Y),
+    aplanar(Xs, Z),
+    append(Y, Z, L).
+aplanar([X|Xs], [X|Z]) :-
+    \+ is_list(X),
+    aplanar(Xs, Z).
