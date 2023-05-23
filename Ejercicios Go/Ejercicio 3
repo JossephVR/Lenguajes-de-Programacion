@@ -1,0 +1,37 @@
+package main
+
+import (
+	"fmt"
+)
+
+func rotateSequence(sequence []interface{}, rotations int, direction int) []interface{} {
+	length := len(sequence)
+
+	if direction == 0 {
+		rotations = rotations % length
+	} else if direction == 1 {
+		rotations = (length - rotations%length) % length
+	} else {
+		fmt.Println("Dirección inválida")
+		return sequence
+	}
+
+	rotated := make([]interface{}, length)
+	copy(rotated, sequence[rotations:])
+	copy(rotated[length-rotations:], sequence[:rotations])
+
+	return rotated
+}
+
+func main() {
+
+	sequence := []interface{}{"a", "b", "c", "d", "e", "f", "g", "h"}
+
+	rotations := 3
+	direction := 0
+
+	rotatedSequence := rotateSequence(sequence, rotations, direction)
+
+	fmt.Println("Secuencia Original:", sequence)
+	fmt.Println("Secuencia Final Rotada:", rotatedSequence)
+}
