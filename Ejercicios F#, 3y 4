@@ -1,0 +1,143 @@
+Ejercicio 3:
+
+open System
+
+type Producto = {
+    nombre: string
+    mutable cantidad: int
+    precio: int
+}
+
+type ListaProductos = Producto list
+
+let mutable lProductos = []
+
+let existenciaMinima = 10
+
+let buscarProducto nombre =
+    let mutable result = -1
+    for i = 0 to (List.length lProductos) - 1 do
+        if lProductos.[i].nombre = nombre then
+            result <- i
+    result
+
+let agregarProducto nombre cantidad precio =
+    let mutable uniform = buscarProducto nombre
+    if uniform = -1 then
+        lProductos <- lProductos @ [{nombre = nombre; cantidad = cantidad; precio = precio}]
+    else
+        for i = 0 to (List.length lProductos) - 1 do
+            if lProductos.[i].nombre = nombre then
+                lProductos.[i].cantidad <- lProductos.[i].cantidad + cantidad
+
+
+let aumentarInventarioDeMinimos () =
+    for i = 0 to (List.length lProductos) - 1 do
+        if lProductos.[i].cantidad < existenciaMinima then
+            let mutable lima = lProductos.[i].cantidad
+            while lima < existenciaMinima do
+                agregarProducto lProductos.[i].nombre 1 lProductos.[i].precio
+                lima <- lProductos.[i].cantidad
+
+let venderProducto nombre =
+    let prod = buscarProducto nombre
+    if prod <> -1 then
+        lProductos.[prod].cantidad <- lProductos.[prod].cantidad - 1
+        if lProductos.[prod].cantidad = 0 then
+            lProductos <- List.filter (fun p -> p.nombre <> nombre) lProductos
+
+let llenarDatos () =
+    agregarProducto "arroz" 15 2500
+    agregarProducto "frijoles" 4 2000
+    agregarProducto "leche" 8 1200
+    agregarProducto "café" 12 4500
+
+let listarProductosMinimos () =
+    lProductos |> List.filter (fun p -> p.cantidad = existenciaMinima)
+
+let ordenarPorPrecio () =
+    lProductos <- List.sortBy (fun p -> p.precio) lProductos
+
+let montoAPagar () =
+    lProductos |> List.sumBy (fun p -> p.cantidad * p.precio)
+
+let montoImpuestoVenta () =
+    lProductos
+    |> List.filter (fun p -> p.precio >= 10000)
+    |> List.sumBy (fun p -> p.cantidad * p.precio * 13)
+
+[<EntryPoint>]
+let main argv =
+    llenarDatos ()
+    printfn "%A" lProductos
+    aumentarInventarioDeMinimos ()
+    printfn "%A" lProductos
+    printfn "%A" (listarProductosMinimos ())
+    ordenarPorPrecio ()
+    printfn "%A" lProductos
+    printfn "Monto a pagar: %d" (montoAPagar ())
+    printfn "Monto impuesto de venta: %d" (montoImpuestoVenta ())
+    0
+
+    
+ Ejercicio 4:
+
+ // Ejercicios de rutas en Grafos con búsqueda en profundidad
+
+//        a ---- c ---- x
+//      /   \  /
+//     /     \/
+//   i       X
+//     \    / \
+//      \  /   \
+//        b ---- d ---- f
+
+
+let grafo = [
+    [('i', 0);('a', 1);('b', 2)];
+    [('a', 1);('i', 0);('c', 3);('d', 2)];
+    [('b', 2);('i', 0);('c', 1);('d', 4)];
+    [('c', 3);('a', 1);('b', 1);('x', 2)];
+    [('d', 2);('a', 4);('b', 1);('f', 3)];
+    [('f', 3);('d', 2)];
+    [('x', 2);('c', 3)]
+]
+
+let miembro e (lista: ('a * 'b) list) =
+    lista
+    |> List.map (fun (x,_) -> x = e)
+    |> List.reduce (fun x y -> x || y)
+
+let rec vecinos nodo grafo =
+    match grafo with
+    | [] -> []
+    | ((head, peso)::adyacencias)::tail when nodo = head -> adyacencias
+    | _::tail -> vecinos nodo tail 
+
+let extender (ruta: _ list) grafo =
+    (vecinos (fst ruta.Head) grafo)
+    |> List.map (fun (x, peso) -> 
+        let ruta_peso = (x, peso + snd ruta.Head)
+        if (miembro x ruta) then [] else ruta_peso::ruta)
+    |> List.filter (fun x -> x <> [])
+
+let rec prof_aux fin (rutas: _ list list) grafo =
+    if rutas = [] then
+        []
+    elif fin = (fst rutas.Head.Head) then
+        List.append
+            ([List.rev rutas.Head])
+            (prof_aux fin rutas.Tail grafo)
+    else
+        prof_aux fin (List.append (extender rutas.Head grafo) rutas.Tail) grafo
+        
+let prof ini fin grafo =
+    let caminos = prof_aux fin [[(ini, 0)]] grafo
+    let camino_mas_corto = 
+        caminos
+        |> List.minBy (fun ruta -> List.sumBy (fun (_, peso) -> peso) ruta)
+    camino_mas_corto
+    |> List.map (fun (v, _) -> v)
+
+printf "%A" (prof 'i' 'f' grafo)
+ 
